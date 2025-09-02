@@ -1,0 +1,6 @@
+# Sally 3.0 - Student Privacy Mapping
+# Format: RealName|CodedName|Grade
+
+Student_Alpha|Student_Alpha|Grade_11
+Student_Beta|Student_Beta|Grade_8
+Student_Gamma|Student_Gamma|Grade_FS2
