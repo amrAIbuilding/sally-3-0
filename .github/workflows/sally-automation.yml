@@ -1,0 +1,54 @@
+name: Sally 3.0 School Communication Assistant
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+    - cron: '0 20 * * 0'
+  workflow_dispatch:
+
+jobs:
+  daily-email-processing:
+    if: github.event.schedule == '0 6 * * *' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+        
+    - name: Process daily emails
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+        GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+      run: python main.py process
+        
+  weekly-summary:
+    if: github.event.schedule == '0 20 * * 0' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+        
+    - name: Install dependencies
+      run: pip install -r requirements.txt
+        
+    - name: Generate weekly summary
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+        GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+      run: python main.py summary
