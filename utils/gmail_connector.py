@@ -43,32 +43,56 @@ class GmailConnector:
         print("📧 GmailConnector initialized")
     
     def authenticate(self, client_secret_path="client_secret.json"):
-        """
-        Authenticate with Gmail using your existing credentials
-        This handles the OAuth flow securely
-        """
-        print(f"🔐 Authenticating with Gmail API...")
+    """
+    Authenticate with Gmail using local file or environment variables
+    """
+    print(f"🔐 Authenticating with Gmail API...")
+    
+    # Check if we have stored credentials
+    token_path = Path("token.json")
+    
+    try:
+        # Try to load existing token
+        if token_path.exists():
+            print("   📱 Found existing token, loading...")
+            self.credentials = Credentials.from_authorized_user_file(
+                token_path, self.SCOPES
+            )
         
-        # Check if we have stored credentials
-        token_path = Path("token.json")
-        
-        try:
-            # Try to load existing token
-            if token_path.exists():
-                print("   📱 Found existing token, loading...")
-                self.credentials = Credentials.from_authorized_user_file(
-                    token_path, self.SCOPES
-                )
-            
-            # If there are no (valid) credentials available, let the user log in
-            if not self.credentials or not self.credentials.valid:
-                if self.credentials and self.credentials.expired and self.credentials.refresh_token:
-                    print("   🔄 Refreshing expired credentials...")
-                    self.credentials.refresh(Request())
-                else:
-                    print("   🆕 Need new authentication - opening browser...")
+        # If there are no (valid) credentials available, let the user log in
+        if not self.credentials or not self.credentials.valid:
+            if self.credentials and self.credentials.expired and self.credentials.refresh_token:
+                print("   🔄 Refreshing expired credentials...")
+                self.credentials.refresh(Request())
+            else:
+                print("   🆕 Need new authentication...")
+                
+                # Try environment variables first (for cloud deployment)
+                client_id = os.getenv('GMAIL_CLIENT_ID')
+                client_secret = os.getenv('GMAIL_CLIENT_SECRET')
+                
+                if client_id and client_secret:
+                    print("   ☁️ Using environment variables for authentication")
+                    # Create credentials from environment variables
+                    client_config = {
+                        "installed": {
+                            "client_id": client_id,
+                            "client_secret": client_secret,
+                            "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+                            "token_uri": "https://oauth2.googleapis.com/token",
+                            "redirect_uris": ["http://localhost"]
+                        }
+                    }
                     
-                    # Use your existing client secret file
+                    flow = InstalledAppFlow.from_client_config(
+                        client_config, self.SCOPES
+                    )
+                    # For cloud environments, we can't open browser
+                    print("   ⚠️ Cloud environment detected - manual authentication required")
+                    return False
+                    
+                else:
+                    # Use local file (for development)
                     if not Path(client_secret_path).exists():
                         print(f"❌ Client secret file not found: {client_secret_path}")
                         print("   Please copy your Gmail API credentials file to the project root")
@@ -78,21 +102,22 @@ class GmailConnector:
                         client_secret_path, self.SCOPES
                     )
                     self.credentials = flow.run_local_server(port=0)
-                
-                # Save the credentials for the next run
+            
+            # Save the credentials for the next run
+            if self.credentials:
                 with open(token_path, 'w') as token:
                     token.write(self.credentials.to_json())
                 print("   💾 Credentials saved for future use")
-            
-            # Build the Gmail service
-            self.service = build('gmail', 'v1', credentials=self.credentials)
-            print("✅ Gmail API authentication successful!")
-            return True
-            
-        except Exception as e:
-            print(f"❌ Gmail authentication failed: {str(e)}")
-            return False
-    
+        
+        # Build the Gmail service
+        self.service = build('gmail', 'v1', credentials=self.credentials)
+        print("✅ Gmail API authentication successful!")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Gmail authentication failed: {str(e)}")
+        return False
+        
     def test_connection(self):
         """
         Test the Gmail connection by getting basic profile info
@@ -332,4 +357,5 @@ if __name__ == "__main__":
         else:
             print("❌ Gmail connection test failed")
     else:
+
         print("❌ Gmail authentication failed")
