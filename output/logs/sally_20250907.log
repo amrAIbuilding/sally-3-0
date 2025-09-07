@@ -1,0 +1,14 @@
+2025-09-07 21:42:12,956 - Sally.Main - ERROR - Gmail authentication failed
+2025-09-07 21:45:44,205 - google_auth_oauthlib.flow - INFO - "GET /?state=wuWsOePjWYkI2ei5lZClVJ78Ri6U83&code=4/0AVMBsJj2ljyqGoFv7M816SiwxRsgIvz8m_D8i74zkk5d1WeOGQqt-b1Lb3YMhNBn01TKYA&scope=https://www.googleapis.com/auth/gmail.readonly%20https://www.googleapis.com/auth/gmail.send%20https://www.googleapis.com/auth/gmail.modify HTTP/1.1" 200 65
+2025-09-07 21:45:45,304 - googleapiclient.discovery_cache - INFO - file_cache is only supported with oauth2client<4.0.0
+2025-09-07 21:45:45,332 - Sally.Main - INFO - Generating test summary...
+2025-09-07 21:45:56,047 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:45:57,993 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:45:59,937 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:46:15,843 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:46:17,550 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:46:19,599 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:46:21,269 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:46:22,840 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:46:24,719 - httpx - INFO - HTTP Request: POST https://api.anthropic.com/v1/messages "HTTP/1.1 200 OK"
+2025-09-07 21:46:26,396 - Sally.Main - INFO - Test summary sent successfully
